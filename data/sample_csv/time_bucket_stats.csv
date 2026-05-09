@@ -1,0 +1,9 @@
+symbol,bucket,pattern,success_rate,trap_rate
+ALPHA,09:05-09:10,day_high,0.61,0.24
+ALPHA,09:10-09:20,high_52w,0.72,0.18
+ALPHA,09:30-10:00,rebreak,0.68,0.21
+BETA,09:10-09:20,rebreak,0.69,0.19
+BETA,09:20-09:30,day_high,0.55,0.27
+BETA,10:00-10:30,rebreak,0.64,0.20
+GAMMA,09:10-09:20,day_high,0.44,0.40
+GAMMA,09:30-10:00,pre_vi,0.47,0.35

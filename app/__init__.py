@@ -1,0 +1,1 @@
+"""Breakout market analyzer package."""

@@ -1,0 +1,52 @@
+{
+  "symbols": [
+    {
+      "symbol": "005930",
+      "name": "삼성전자",
+      "size_group_ko": "대형",
+      "day_high": 85000,
+      "prev_day_high": 84500,
+      "high_52w": 88800,
+      "vi_price": 87400,
+      "is_leader_stock": true,
+      "base_price": 84600,
+      "base_turnover_billion": 72.5,
+      "base_program_net_buy_billion": 3.1,
+      "patterns": [
+        {
+          "bucket": "09:10-09:20",
+          "pattern": "당일고가",
+          "success_rate": 0.58,
+          "trap_rate": 0.25
+        },
+        {
+          "bucket": "09:30-10:00",
+          "pattern": "재돌파",
+          "success_rate": 0.63,
+          "trap_rate": 0.18
+        }
+      ]
+    },
+    {
+      "symbol": "247540",
+      "name": "에코프로비엠",
+      "size_group_ko": "중형",
+      "day_high": 312000,
+      "prev_day_high": 309500,
+      "high_52w": 334000,
+      "vi_price": 321500,
+      "is_leader_stock": true,
+      "base_price": 308500,
+      "base_turnover_billion": 68.0,
+      "base_program_net_buy_billion": 2.4,
+      "patterns": [
+        {
+          "bucket": "09:10-09:20",
+          "pattern": "재돌파",
+          "success_rate": 0.66,
+          "trap_rate": 0.19
+        }
+      ]
+    }
+  ]
+}

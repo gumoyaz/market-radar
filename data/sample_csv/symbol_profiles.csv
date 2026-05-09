@@ -1,0 +1,4 @@
+symbol,name,size_group,day_high,prev_day_high,high_52w,vi_price,is_leader_stock
+ALPHA,Alpha Robotics,small,101000,99500,101000,107000,true
+BETA,Beta Energy,mid,52000,51500,58000,55800,true
+GAMMA,Gamma Bio,small,21800,21700,24000,23100,false

@@ -1,0 +1,53 @@
+{
+  "value_maps": {
+    "size_group": {
+      "small": "small",
+      "mid": "mid",
+      "large": "large"
+    },
+    "is_leader_stock": {
+      "true": "true",
+      "false": "false"
+    },
+    "pattern": {
+      "high_52w": "high_52w",
+      "day_high": "day_high",
+      "prev_day_high": "prev_day_high",
+      "rebreak": "rebreak",
+      "pre_vi": "pre_vi"
+    }
+  },
+  "symbol_profiles": {
+    "source": "raw_symbol_profiles.csv",
+    "fields": {
+      "symbol": "symbol",
+      "name": "name",
+      "size_group": "size_group",
+      "day_high": "day_high",
+      "prev_day_high": "prev_day_high",
+      "high_52w": "high_52w",
+      "vi_price": "vi_price",
+      "is_leader_stock": "is_leader_stock"
+    }
+  },
+  "minute_bars": {
+    "source": "raw_minute_bars.csv",
+    "fields": {
+      "symbol": "symbol",
+      "ts": "ts",
+      "close": "close",
+      "turnover_billion": "turnover_billion",
+      "program_net_buy_billion": "program_net_buy_billion"
+    }
+  },
+  "time_bucket_stats": {
+    "source": "raw_time_bucket_stats.csv",
+    "fields": {
+      "symbol": "symbol",
+      "bucket": "bucket",
+      "pattern": "pattern",
+      "success_rate": "success_rate",
+      "trap_rate": "trap_rate"
+    }
+  }
+}

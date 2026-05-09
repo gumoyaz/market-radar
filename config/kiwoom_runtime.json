@@ -1,0 +1,7 @@
+{
+  "broker": "kiwoom",
+  "raw_dir": "data/kiwoom_live_raw",
+  "mapping_path": "data/mappings/kiwoom_mapping.json",
+  "time_bucket": "09:10-09:20",
+  "notes": "Default raw_dir points to the collector output folder. Replace it with your real Kiwoom raw CSV folder later."
+}

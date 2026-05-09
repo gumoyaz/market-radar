@@ -1,0 +1,53 @@
+{
+  "value_maps": {
+    "size_group": {
+      "소형": "small",
+      "중형": "mid",
+      "대형": "large"
+    },
+    "is_leader_stock": {
+      "Y": "true",
+      "N": "false"
+    },
+    "pattern": {
+      "52주신고가": "high_52w",
+      "당일고가": "day_high",
+      "전일고가": "prev_day_high",
+      "재돌파": "rebreak",
+      "VI직전": "pre_vi"
+    }
+  },
+  "symbol_profiles": {
+    "source": "raw_symbol_profiles.csv",
+    "fields": {
+      "symbol": "종목코드",
+      "name": "종목명",
+      "size_group": "시총구분",
+      "day_high": "당일고가",
+      "prev_day_high": "전일고가",
+      "high_52w": "52주고가",
+      "vi_price": "VI가격",
+      "is_leader_stock": "주도주여부"
+    }
+  },
+  "minute_bars": {
+    "source": "raw_minute_bars.csv",
+    "fields": {
+      "symbol": "종목코드",
+      "ts": "체결시각",
+      "close": "현재가",
+      "turnover_billion": "분당거래대금_억",
+      "program_net_buy_billion": "프로그램순매수_억"
+    }
+  },
+  "time_bucket_stats": {
+    "source": "raw_time_bucket_stats.csv",
+    "fields": {
+      "symbol": "종목코드",
+      "bucket": "시간대",
+      "pattern": "패턴",
+      "success_rate": "성공률",
+      "trap_rate": "함정비율"
+    }
+  }
+}
