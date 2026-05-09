@@ -379,6 +379,7 @@ def _build_time_rows(snapshot: MarketSnapshot) -> str:
 
 def _build_candidate_card(candidate: ScoredCandidate) -> str:
     features = candidate.features
+    scorecard = candidate.scorecard
     tags = [
         f'<span class="tag">{escape(candidate.pattern.name.value)}</span>',
         f'<span class="tag">time {escape(features.time_bucket)}</span>',
@@ -390,11 +391,26 @@ def _build_candidate_card(candidate: ScoredCandidate) -> str:
         tags.append('<span class="tag">3m sustain</span>')
     if features.is_leader_stock:
         tags.append('<span class="tag">leader</span>')
+    if scorecard is not None:
+        tags.append(f'<span class="tag">stage {escape(scorecard.stage.value)}</span>')
+        tags.append(f'<span class="tag">action {escape(scorecard.action)}</span>')
+        tags.append(f'<span class="tag">leader {escape(scorecard.leader_choice)}</span>')
 
     reasons = "\n".join(
         f"<li>{escape(reason)}</li>"
         for reason in candidate.reasons
     )
+    breakdown = ""
+    if scorecard is not None:
+        breakdown = (
+            '<div class="tag-row">'
+            f'<span class="tag">theme {scorecard.theme_score:.0f}</span>'
+            f'<span class="tag">daily {scorecard.daily_score:.0f}</span>'
+            f'<span class="tag">minute {scorecard.minute_score:.0f}</span>'
+            f'<span class="tag">news {scorecard.news_score:.0f}</span>'
+            f'<span class="tag">leader {scorecard.leadership_score:.0f}</span>'
+            "</div>"
+        )
 
     return (
         '<article class="candidate">'
@@ -403,6 +419,7 @@ def _build_candidate_card(candidate: ScoredCandidate) -> str:
         f'<div class="score">{candidate.total_score:.1f}</div>'
         "</div>"
         f'<div class="tag-row">{"".join(tags)}</div>'
+        f"{breakdown}"
         "<ul class=\"reason-list\">"
         f"{reasons}"
         "</ul>"

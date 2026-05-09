@@ -52,4 +52,34 @@ def ensure_schema(conn: sqlite3.Connection) -> None:
         ON time_bucket_stats(symbol);
         """
     )
+
+    _ensure_column(conn, "symbol_profiles", "theme_name", "TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "symbol_profiles", "theme_strength_percentile", "REAL NOT NULL DEFAULT 0")
+    _ensure_column(conn, "symbol_profiles", "theme_breadth_ratio", "REAL NOT NULL DEFAULT 0")
+    _ensure_column(conn, "symbol_profiles", "theme_leader_count", "INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "symbol_profiles", "theme_turnover_share_pct", "REAL NOT NULL DEFAULT 0")
+    _ensure_column(conn, "symbol_profiles", "theme_persistence_days", "INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "symbol_profiles", "daily_distance_to_52w_high_pct", "REAL NOT NULL DEFAULT 100")
+    _ensure_column(conn, "symbol_profiles", "daily_consolidation_days", "INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "symbol_profiles", "daily_consolidation_range_pct", "REAL NOT NULL DEFAULT 100")
+    _ensure_column(conn, "symbol_profiles", "daily_turnover_ratio", "REAL NOT NULL DEFAULT 0")
+    _ensure_column(conn, "symbol_profiles", "daily_close_position_pct", "REAL NOT NULL DEFAULT 0")
+    _ensure_column(conn, "symbol_profiles", "news_has_news", "INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "symbol_profiles", "news_headline_strength", "REAL NOT NULL DEFAULT 0")
+    _ensure_column(conn, "symbol_profiles", "news_source_count", "INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "symbol_profiles", "news_minutes_since_release", "INTEGER NOT NULL DEFAULT 9999")
+    _ensure_column(conn, "symbol_profiles", "news_catalyst", "TEXT NOT NULL DEFAULT ''")
+    _ensure_column(conn, "symbol_profiles", "news_is_confirmed", "INTEGER NOT NULL DEFAULT 0")
+    _ensure_column(conn, "symbol_profiles", "news_is_theme_aligned", "INTEGER NOT NULL DEFAULT 0")
+
     conn.commit()
+
+
+def _ensure_column(conn: sqlite3.Connection, table_name: str, column_name: str, ddl: str) -> None:
+    columns = {
+        row["name"]
+        for row in conn.execute(f"PRAGMA table_info({table_name})").fetchall()
+    }
+    if column_name in columns:
+        return
+    conn.execute(f"ALTER TABLE {table_name} ADD COLUMN {column_name} {ddl}")

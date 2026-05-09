@@ -46,6 +46,20 @@ def build_json_snapshot(
                 "pattern_confidence": round(candidate.pattern.confidence, 4),
                 "market_alignment": candidate.market_alignment,
                 "reasons": candidate.reasons,
+                "scorecard": {
+                    "theme_score": candidate.scorecard.theme_score,
+                    "daily_score": candidate.scorecard.daily_score,
+                    "minute_score": candidate.scorecard.minute_score,
+                    "news_score": candidate.scorecard.news_score,
+                    "leadership_score": candidate.scorecard.leadership_score,
+                    "total_score": candidate.scorecard.total_score,
+                    "stage": candidate.scorecard.stage.value,
+                    "action": candidate.scorecard.action,
+                    "leader_choice": candidate.scorecard.leader_choice,
+                    "warnings": candidate.scorecard.warnings,
+                }
+                if candidate.scorecard
+                else None,
                 "features": {
                     "time_bucket": candidate.features.time_bucket,
                     "data_source": candidate.features.data_source,

@@ -26,6 +26,7 @@ def render_analysis(result: tuple[MarketSnapshot, list[ScoredCandidate]]) -> str
 
     for idx, candidate in enumerate(ranked, start=1):
         features = candidate.features
+        scorecard = candidate.scorecard
         lines.append(
             f"{idx:>2}. {candidate.symbol:<8} "
             f"score={candidate.total_score:>6.1f} "
@@ -37,5 +38,17 @@ def render_analysis(result: tuple[MarketSnapshot, list[ScoredCandidate]]) -> str
             f"market_fit={candidate.market_alignment:<10}"
         )
         lines.append(f"    reasons: {', '.join(candidate.reasons)}")
+        if scorecard is not None:
+            lines.append(
+                "    scorecard: "
+                f"theme={scorecard.theme_score:.1f} "
+                f"daily={scorecard.daily_score:.1f} "
+                f"minute={scorecard.minute_score:.1f} "
+                f"news={scorecard.news_score:.1f} "
+                f"leadership={scorecard.leadership_score:.1f} "
+                f"stage={scorecard.stage.value} "
+                f"action={scorecard.action} "
+                f"leader_choice={scorecard.leader_choice}"
+            )
 
     return "\n".join(lines)

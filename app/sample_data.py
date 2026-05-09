@@ -1,6 +1,17 @@
 from __future__ import annotations
 
-from app.models import MinuteBar, PatternType, SizeGroup, SymbolInput, SymbolProfile, TimeBucketStat
+from app.models import (
+    DailyContext,
+    LeadershipContext,
+    MinuteBar,
+    NewsContext,
+    PatternType,
+    SizeGroup,
+    SymbolInput,
+    SymbolProfile,
+    ThemeContext,
+    TimeBucketStat,
+)
 
 
 def build_sample_watchlist() -> list[SymbolInput]:
@@ -26,6 +37,41 @@ def build_sample_watchlist() -> list[SymbolInput]:
                 TimeBucketStat("09:10-09:20", PatternType.HIGH_52W, 0.72, 0.18),
                 TimeBucketStat("09:30-10:00", PatternType.REBREAK, 0.68, 0.21),
             ],
+            theme_context=ThemeContext(
+                theme_name="robotics",
+                strength_percentile=88.0,
+                breadth_ratio=0.62,
+                leader_count=3,
+                turnover_share_pct=18.0,
+                persistence_days=3,
+            ),
+            daily_context=DailyContext(
+                distance_to_52w_high_pct=0.3,
+                consolidation_days=34,
+                consolidation_range_pct=12.0,
+                daily_turnover_ratio=3.2,
+                close_position_pct=86.0,
+            ),
+            news_context=NewsContext(
+                has_news=True,
+                headline_strength=84.0,
+                source_count=4,
+                minutes_since_release=25,
+                catalyst="government robotics policy",
+                is_confirmed=True,
+                is_theme_aligned=True,
+            ),
+            leadership_context=LeadershipContext(
+                theme_member_count=4,
+                turnover_rank=1,
+                return_rank=1,
+                turnover_share_pct=28.0,
+                intraday_return_pct=18.4,
+                gap_from_next_turnover_pct=9.0,
+                gap_from_next_return_pct=3.2,
+                move_persistence_minutes=18,
+                is_news_leader=True,
+            ),
         ),
         SymbolInput(
             profile=SymbolProfile(
@@ -48,6 +94,41 @@ def build_sample_watchlist() -> list[SymbolInput]:
                 TimeBucketStat("09:20-09:30", PatternType.DAY_HIGH, 0.55, 0.27),
                 TimeBucketStat("10:00-10:30", PatternType.REBREAK, 0.64, 0.20),
             ],
+            theme_context=ThemeContext(
+                theme_name="energy infrastructure",
+                strength_percentile=74.0,
+                breadth_ratio=0.51,
+                leader_count=2,
+                turnover_share_pct=14.0,
+                persistence_days=2,
+            ),
+            daily_context=DailyContext(
+                distance_to_52w_high_pct=6.1,
+                consolidation_days=21,
+                consolidation_range_pct=18.0,
+                daily_turnover_ratio=2.5,
+                close_position_pct=72.0,
+            ),
+            news_context=NewsContext(
+                has_news=True,
+                headline_strength=67.0,
+                source_count=2,
+                minutes_since_release=90,
+                catalyst="project order",
+                is_confirmed=True,
+                is_theme_aligned=True,
+            ),
+            leadership_context=LeadershipContext(
+                theme_member_count=6,
+                turnover_rank=1,
+                return_rank=2,
+                turnover_share_pct=24.0,
+                intraday_return_pct=11.2,
+                gap_from_next_turnover_pct=7.4,
+                gap_from_next_return_pct=1.1,
+                move_persistence_minutes=26,
+                is_news_leader=False,
+            ),
         ),
         SymbolInput(
             profile=SymbolProfile(
@@ -69,5 +150,40 @@ def build_sample_watchlist() -> list[SymbolInput]:
                 TimeBucketStat("09:10-09:20", PatternType.DAY_HIGH, 0.44, 0.40),
                 TimeBucketStat("09:30-10:00", PatternType.PRE_VI, 0.47, 0.35),
             ],
+            theme_context=ThemeContext(
+                theme_name="biotech",
+                strength_percentile=41.0,
+                breadth_ratio=0.28,
+                leader_count=1,
+                turnover_share_pct=7.0,
+                persistence_days=1,
+            ),
+            daily_context=DailyContext(
+                distance_to_52w_high_pct=9.7,
+                consolidation_days=9,
+                consolidation_range_pct=26.0,
+                daily_turnover_ratio=1.3,
+                close_position_pct=55.0,
+            ),
+            news_context=NewsContext(
+                has_news=False,
+                headline_strength=0.0,
+                source_count=0,
+                minutes_since_release=9_999,
+                catalyst="",
+                is_confirmed=False,
+                is_theme_aligned=False,
+            ),
+            leadership_context=LeadershipContext(
+                theme_member_count=5,
+                turnover_rank=4,
+                return_rank=1,
+                turnover_share_pct=9.0,
+                intraday_return_pct=15.8,
+                gap_from_next_turnover_pct=0.6,
+                gap_from_next_return_pct=2.8,
+                move_persistence_minutes=4,
+                is_news_leader=False,
+            ),
         ),
     ]

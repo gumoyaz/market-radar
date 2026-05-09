@@ -1,20 +1,103 @@
-# Breakout Analyzer Skeleton
+# Market Radar
 
-브레이크아웃 시장 분석기 1차 버전이다. 외부 라이브러리 없이 돌아가고, 이제 `CSV -> SQLite -> 분석` 흐름까지 포함한다.
+한국 주식 단기 트레이딩을 위한 시장 분위기 분석 프로젝트다.
 
-## 포함된 로직
+이 프로젝트의 목표는 단순히 "지금 살 종목"을 뽑는 것이 아니라, 최근 시장이 어떤 전략을 허용하는지 정량적으로 파악하는 것이다.
 
-- 소형주 `분당 거래대금 30억 이상`
-- 중형 이상 `분당 거래대금 60억 이상`
-- 최근 3분 지속 여부
-- `52주 신고가`, `당일 고가`, `전일 고가`, `재돌파`, `VI 직전 압축` 패턴 탐지
-- 시간대 적합도 반영
-- 시장 상태 `favorable / neutral / trap` 계산
-- 종목 점수화
+예를 들어 아래 질문에 답하는 것을 목표로 한다.
 
-## 실행 예시
+- 최근 1주일 돌파매매 성공률은 어떤가
+- 최근 시장은 돌파 친화장인가, 함정장인가
+- 어떤 시간대에 돌파가 잘 되는가
+- 거래대금, 프로그램 매수, 주도주 여부가 성과에 어떤 영향을 주는가
 
-샘플 메모리 데이터 바로 실행:
+## 현재 방향
+
+현재 페이즈의 중심은 `돌파매매`다.
+
+지금 하고 있는 일:
+
+- 돌파매매를 위한 로직 설계
+- 돌파매매를 위한 인터페이스 설계
+- 최근 돌파 트렌드와 시장 분위기 해석
+
+다음 페이즈에서 확장할 전략:
+
+- 눌림목
+- 종베
+- 상따
+- 스윙
+
+즉, 지금은 범위를 넓게 벌리기보다 `돌파매매 하나를 제대로 정의하고 보여주는 것`이 우선이다.
+
+## 현재 상태
+
+현재는 1차 프로토타입 단계다.
+
+구현되어 있는 것:
+
+- CSV -> 정규화 -> SQLite -> 분석 파이프라인
+- HTML / JSON 대시보드 출력
+- 키움 OpenAPI+ 연동용 수집기 뼈대
+- 키움 로그인 테스트 및 실시간 등록 테스트 코드
+- 돌파 중심 점수화/시장 상태 분석 로직 초안
+
+아직 진행 중인 것:
+
+- 장중 실시간 틱 수신 최종 검증
+- 돌파매매 인터페이스 설명력 강화
+- 돌파 트렌드/시장 상태 대시보드 재구성
+- 전략 정의 고도화와 백테스트 체계화
+
+## 장기 방향
+
+초기에는 브레이크아웃 분석기로 시작했지만, 장기적으로는 더 넓은 시장 분위기 분석기로 간다.
+
+장기적으로 다루고 싶은 범위:
+
+- 돌파매매 분석
+- 눌림목 분석
+- 상따매매 분석
+- 종베매매 분석
+- 스윙 분석
+- 시간대별 전략 성과 분석
+- 시장 레짐 분류
+- 주도주/수급/거래대금 기반 시장 분위기 해석
+
+즉, 최종적으로는 `실시간 종목 추천기`보다 `실시간 시장 분위기 분석기`에 가깝다.
+
+## 문서
+
+핵심 문서:
+
+- [README.md](C:/Users/Vince-PC/Documents/Codex/market-radar/README.md)
+- [docs/PROJECT_SCOPE.md](C:/Users/Vince-PC/Documents/Codex/market-radar/docs/PROJECT_SCOPE.md)
+- [docs/TRADING_LOGIC.md](C:/Users/Vince-PC/Documents/Codex/market-radar/docs/TRADING_LOGIC.md)
+- [docs/ROADMAP.md](C:/Users/Vince-PC/Documents/Codex/market-radar/docs/ROADMAP.md)
+
+보조 문서:
+
+- [KIWOOM_ONBOARDING.md](C:/Users/Vince-PC/Documents/Codex/market-radar/KIWOOM_ONBOARDING.md)
+- [REAL_DATA_ONBOARDING.md](C:/Users/Vince-PC/Documents/Codex/market-radar/REAL_DATA_ONBOARDING.md)
+
+## 폴더 구조
+
+```text
+market-radar/
+  app/                  핵심 분석 로직
+  config/               런타임/수집기 설정
+  data/                 샘플/템플릿/매핑 파일
+  docs/                 프로젝트 범위/전략 문서
+  collect_kiwoom_raw.py 키움 raw 수집기 진입점
+  dashboard.py          HTML 대시보드 생성
+  main.py               메인 분석 실행기
+  monitor.py            반복 갱신형 실행기
+  run_pipeline.py       원본 CSV -> 분석 파이프라인 일괄 실행
+```
+
+## 빠른 실행
+
+샘플 메모리 데이터 분석:
 
 ```powershell
 & "C:\Users\Vince-PC\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" main.py
@@ -26,122 +109,28 @@
 & "C:\Users\Vince-PC\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" dashboard.py
 ```
 
-CSV를 주기적으로 다시 읽어서 라이브 대시보드/JSON 갱신:
-
-```powershell
-& "C:\Users\Vince-PC\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" monitor.py --import-csv-dir data/sample_csv --interval-sec 60 --cycles 0
-```
-
-원본 CSV 컬럼명을 표준 포맷으로 변환:
-
-```powershell
-& "C:\Users\Vince-PC\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" normalize_csv.py --raw-dir data/raw_sample --mapping data/mappings/example_mapping.json --output-dir data/normalized_from_raw
-```
-
-원본 CSV 헤더를 보고 시작용 매핑 파일 자동 생성:
-
-```powershell
-& "C:\Users\Vince-PC\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" inspect_csv_headers.py --raw-dir data/raw_sample --output-report output/csv-header-report.md --output-mapping output/starter-mapping.json
-```
-
-원본 CSV에서 리포트/정규화/DB/대시보드까지 한 번에 실행:
+원본 CSV -> 정규화 -> DB -> 리포트 -> 대시보드:
 
 ```powershell
 & "C:\Users\Vince-PC\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" run_pipeline.py --raw-dir data/raw_sample --mapping data/mappings/example_mapping.json --workspace pipeline_output
 ```
 
-키움 기준 설정으로 파이프라인 실행:
-
-```powershell
-& "C:\Users\Vince-PC\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" kiwoom_run.py
-```
-
-키움 raw CSV 수집기 실행:
-
-```powershell
-& "C:\Users\Vince-PC\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" collect_kiwoom_raw.py
-```
-
-키움 live 모드는 `PyQt5.QAxContainer`와 키움 OpenAPI+ 설치가 필요하다.
-
-설치 후 환경 점검:
-
-```powershell
-& "C:\Users\Vince-PC\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" check_kiwoom_env.py
-```
-
-32비트 Python 기반 키움 로그인 테스트:
+키움 로그인 테스트:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\run_kiwoom_login_test_32.ps1
 ```
 
-32비트 Python 기반 키움 live 수집:
-
-```powershell
-powershell -ExecutionPolicy Bypass -File .\run_kiwoom_live_32.ps1
-```
-
-32비트 Python 기반 실시간 이벤트 단건 테스트:
+키움 실시간 등록 테스트:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\run_kiwoom_realtime_test_32.ps1
 ```
 
-샘플 데이터를 SQLite에 넣고 DB 기준으로 실행:
+## 다음 우선순위
 
-```powershell
-& "C:\Users\Vince-PC\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" main.py --source db --seed-sample-db
-```
-
-CSV 디렉터리를 SQLite로 적재 후 실행:
-
-```powershell
-& "C:\Users\Vince-PC\.cache\codex-runtimes\codex-primary-runtime\dependencies\python\python.exe" main.py --source db --import-csv-dir data/sample_csv
-```
-
-## CSV 포맷
-
-`symbol_profiles.csv`
-
-```text
-symbol,name,size_group,day_high,prev_day_high,high_52w,vi_price,is_leader_stock
-```
-
-`minute_bars.csv`
-
-```text
-symbol,ts,close,turnover_billion,program_net_buy_billion
-```
-
-`time_bucket_stats.csv`
-
-```text
-symbol,bucket,pattern,success_rate,trap_rate
-```
-
-## 원본 CSV 변환
-
-실제 증권사/수집기 CSV는 컬럼명이 다를 수 있으니, 먼저 `normalize_csv.py`로 표준 포맷으로 맞춘 다음 `main.py`, `dashboard.py`, `monitor.py`에 넣으면 돼.
-
-- 원본 예시: [data/raw_sample](C:/Users/Vince-PC/Documents/Codex/2026-04-23-new-chat/data/raw_sample)
-- 매핑 예시: [data/mappings/example_mapping.json](C:/Users/Vince-PC/Documents/Codex/2026-04-23-new-chat/data/mappings/example_mapping.json)
-- 변환 출력: `data/normalized_from_raw`
-- 헤더 점검 리포트: `output/csv-header-report.md`
-- 자동 생성 시작용 매핑: `output/starter-mapping.json`
-
-## 출력 파일
-
-- 콘솔 분석: 터미널에 바로 출력
-- HTML 대시보드: `output/dashboard.html`
-- 라이브 HTML 대시보드: `output/live-dashboard.html`
-- 라이브 JSON 스냅샷: `output/live-dashboard.json`
-- 통합 파이프라인 출력: `pipeline_output/`
-
-## 다음 단계
-
-1. 실제 증권사/API 데이터 연결
-2. 장중 반복 적재 작업 추가
-3. 장마감 라벨링과 백테스트 구현
-4. Streamlit 또는 React 대시보드 연결
-5. 이후 재학습 파이프라인 추가
+1. 돌파매매 로직 정리
+2. 돌파매매 인터페이스 설계
+3. 최근 돌파 트렌드/시장 상태 대시보드 강화
+4. 장중 실시간 수집 검증 마무리
+5. 다음 페이즈 전략 확장 준비

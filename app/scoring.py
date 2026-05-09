@@ -1,8 +1,9 @@
 from __future__ import annotations
 
+from app.breakout_logic import build_breakout_scorecard
 from app.detectors import detect_pattern
 from app.features import build_feature_snapshot
-from app.models import MarketSnapshot, PatternType, ScoredCandidate, SymbolInput
+from app.models import MarketSnapshot, ScoredCandidate, SymbolInput
 
 
 def _bucket_alignment(snapshot: MarketSnapshot, bucket: str) -> tuple[str, float]:
@@ -12,18 +13,6 @@ def _bucket_alignment(snapshot: MarketSnapshot, bucket: str) -> tuple[str, float
     if success_rate <= 0.48:
         return "weak", 2.0
     return "neutral", 6.0
-
-
-def _pattern_score(pattern_name: PatternType) -> float:
-    base = {
-        PatternType.HIGH_52W: 24.0,
-        PatternType.DAY_HIGH: 22.0,
-        PatternType.PREV_DAY_HIGH: 18.0,
-        PatternType.REBREAK: 21.0,
-        PatternType.PRE_VI: 16.0,
-        PatternType.NONE: 0.0,
-    }
-    return base[pattern_name]
 
 
 def score_watchlist(
@@ -37,44 +26,44 @@ def score_watchlist(
         features = build_feature_snapshot(symbol_input, current_time_bucket)
         pattern = detect_pattern(features)
         bucket_alignment, time_score = _bucket_alignment(market_snapshot, features.time_bucket)
-
-        liquidity_score = min(features.turnover_vs_threshold_ratio * 12.0, 30.0)
-        sustain_score = 15.0 if features.turnover_3m_sustain_flag else 0.0
-        program_score = min(max(features.program_net_buy_3m, 0.0) * 1.5, 10.0)
-        leader_score = 8.0 if features.is_leader_stock else 0.0
-        pattern_score = _pattern_score(pattern.name)
-        market_pattern_bonus = market_snapshot.pattern_success_bias.get(pattern.name, 0.5) * 12.0
-
-        total_score = (
-            liquidity_score
-            + sustain_score
-            + program_score
-            + leader_score
-            + pattern_score
-            + time_score
-            + market_pattern_bonus
+        scorecard = build_breakout_scorecard(
+            symbol_input.theme_context,
+            symbol_input.daily_context,
+            symbol_input.news_context,
+            symbol_input.leadership_context,
+            features,
+            market_snapshot,
+            pattern,
         )
 
-        reasons = []
-        if features.turnover_3m_sustain_flag:
-            reasons.append("3분 거래대금 지속")
-        if pattern.name != PatternType.NONE:
-            reasons.append(f"패턴={pattern.name.value}")
-        if features.program_net_buy_3m > 0:
-            reasons.append("프로그램 순매수 우위")
-        if features.is_leader_stock:
-            reasons.append("주도주 필터 통과")
-        reasons.append(f"시간대 적합도={bucket_alignment}")
-        reasons.append(f"시장상태={market_snapshot.regime_label}")
+        total_score = round(min(scorecard.total_score + (time_score - 6.0), 100.0), 1)
+        reasons = list(scorecard.reasons)
+        reasons.append(f"time alignment={bucket_alignment}")
+        reasons.append(f"market regime={market_snapshot.regime_label}")
+        reasons.append(
+            "T/D/M/N/L="
+            f"{scorecard.theme_score:.0f}/"
+            f"{scorecard.daily_score:.0f}/"
+            f"{scorecard.minute_score:.0f}/"
+            f"{scorecard.news_score:.0f}/"
+            f"{scorecard.leadership_score:.0f}"
+        )
+        reasons.append(f"action={scorecard.action}")
+        reasons.append(f"leader_choice={scorecard.leader_choice}")
+        if pattern.name.value != "none":
+            reasons.append(f"pattern={pattern.name.value}")
+        for warning in scorecard.warnings:
+            reasons.append(f"warn:{warning}")
 
         ranked.append(
             ScoredCandidate(
                 symbol=symbol_input.profile.symbol,
                 features=features,
                 pattern=pattern,
-                total_score=round(total_score, 1),
+                total_score=total_score,
                 market_alignment=bucket_alignment,
                 reasons=reasons,
+                scorecard=scorecard,
             )
         )
 

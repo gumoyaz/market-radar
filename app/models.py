@@ -19,6 +19,15 @@ class PatternType(str, Enum):
     PRE_VI = "pre_vi"
 
 
+class BreakoutStage(str, Enum):
+    WAIT = "wait"
+    PROBING = "probing"
+    BREAKING = "breaking"
+    HOLDING = "holding"
+    EXTENDED = "extended"
+    FAILED = "failed"
+
+
 @dataclass(frozen=True)
 class MinuteBar:
     close: float
@@ -48,10 +57,57 @@ class TimeBucketStat:
 
 
 @dataclass(frozen=True)
+class ThemeContext:
+    theme_name: str = ""
+    strength_percentile: float = 0.0
+    breadth_ratio: float = 0.0
+    leader_count: int = 0
+    turnover_share_pct: float = 0.0
+    persistence_days: int = 0
+
+
+@dataclass(frozen=True)
+class DailyContext:
+    distance_to_52w_high_pct: float = 100.0
+    consolidation_days: int = 0
+    consolidation_range_pct: float = 100.0
+    daily_turnover_ratio: float = 0.0
+    close_position_pct: float = 0.0
+
+
+@dataclass(frozen=True)
+class NewsContext:
+    has_news: bool = False
+    headline_strength: float = 0.0
+    source_count: int = 0
+    minutes_since_release: int = 9_999
+    catalyst: str = ""
+    is_confirmed: bool = False
+    is_theme_aligned: bool = False
+
+
+@dataclass(frozen=True)
+class LeadershipContext:
+    theme_member_count: int = 0
+    turnover_rank: int = 99
+    return_rank: int = 99
+    turnover_share_pct: float = 0.0
+    intraday_return_pct: float = 0.0
+    gap_from_next_turnover_pct: float = 0.0
+    gap_from_next_return_pct: float = 0.0
+    move_persistence_minutes: int = 0
+    is_news_leader: bool = False
+
+
+@dataclass(frozen=True)
 class SymbolInput:
     profile: SymbolProfile
     recent_bars: list[MinuteBar]
     time_bucket_stats: list[TimeBucketStat] = field(default_factory=list)
+    theme_context: ThemeContext = field(default_factory=ThemeContext)
+    daily_context: DailyContext = field(default_factory=DailyContext)
+    news_context: NewsContext = field(default_factory=NewsContext)
+    leadership_context: LeadershipContext = field(default_factory=LeadershipContext)
 
 
 @dataclass(frozen=True)
@@ -95,6 +151,21 @@ class MarketSnapshot:
 
 
 @dataclass(frozen=True)
+class BreakoutScorecard:
+    theme_score: float
+    daily_score: float
+    minute_score: float
+    news_score: float
+    leadership_score: float
+    total_score: float
+    stage: BreakoutStage
+    action: str
+    leader_choice: str
+    reasons: list[str]
+    warnings: list[str]
+
+
+@dataclass(frozen=True)
 class ScoredCandidate:
     symbol: str
     features: FeatureSnapshot
@@ -102,3 +173,4 @@ class ScoredCandidate:
     total_score: float
     market_alignment: str
     reasons: list[str]
+    scorecard: BreakoutScorecard | None = None
