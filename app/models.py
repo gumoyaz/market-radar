@@ -100,6 +100,17 @@ class LeadershipContext:
 
 
 @dataclass(frozen=True)
+class MacroIndicator:
+    code: str
+    label: str
+    group: str
+    price_text: str
+    change_pct: float
+    status_text: str = ""
+    source: str = "sample"
+
+
+@dataclass(frozen=True)
 class SymbolInput:
     profile: SymbolProfile
     recent_bars: list[MinuteBar]
@@ -148,6 +159,7 @@ class MarketSnapshot:
     best_time_bucket: str
     pattern_success_bias: dict[PatternType, float]
     time_bucket_bias: dict[str, float]
+    macro_indicators: list[MacroIndicator] = field(default_factory=list)
 
 
 @dataclass(frozen=True)

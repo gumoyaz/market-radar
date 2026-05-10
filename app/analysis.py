@@ -19,6 +19,7 @@ def render_analysis(result: tuple[MarketSnapshot, list[ScoredCandidate]]) -> str
         f"Market regime: {snapshot.regime_label}",
         f"Dominant pattern: {snapshot.dominant_pattern}",
         f"Best time bucket: {snapshot.best_time_bucket}",
+        f"Macro board: {', '.join(f'{item.label} {item.price_text} ({item.change_pct:+.2f}%)' for item in snapshot.macro_indicators[:6])}",
         "",
         "Top candidates",
         "-" * 80,

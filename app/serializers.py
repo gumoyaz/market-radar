@@ -29,6 +29,18 @@ def build_json_snapshot(
             "regime_label": snapshot.regime_label,
             "dominant_pattern": snapshot.dominant_pattern,
             "best_time_bucket": snapshot.best_time_bucket,
+            "macro_indicators": [
+                {
+                    "code": indicator.code,
+                    "label": indicator.label,
+                    "group": indicator.group,
+                    "price_text": indicator.price_text,
+                    "change_pct": indicator.change_pct,
+                    "status_text": indicator.status_text,
+                    "source": indicator.source,
+                }
+                for indicator in snapshot.macro_indicators
+            ],
             "pattern_success_bias": {
                 pattern.value: round(bias, 4)
                 for pattern, bias in snapshot.pattern_success_bias.items()

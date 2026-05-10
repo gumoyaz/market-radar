@@ -5,6 +5,7 @@ from collections import Counter, defaultdict
 from app.detectors import detect_pattern
 from app.features import build_feature_snapshot
 from app.models import MarketSnapshot, PatternType, SymbolInput
+from app.reference_data import build_reference_macro_indicators
 
 
 def build_market_snapshot(watchlist: list[SymbolInput], current_time_bucket: str = "09:10-09:20") -> MarketSnapshot:
@@ -54,4 +55,5 @@ def build_market_snapshot(watchlist: list[SymbolInput], current_time_bucket: str
         best_time_bucket=best_time_bucket,
         pattern_success_bias=pattern_bias,
         time_bucket_bias=time_bias,
+        macro_indicators=build_reference_macro_indicators(),
     )
